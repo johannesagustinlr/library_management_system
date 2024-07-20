@@ -3,6 +3,7 @@ from app.schema import UpdateBook, CreateBook
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.model import Books
+from typing import List
 
 router = APIRouter()
 
@@ -25,19 +26,21 @@ def get_a_books(id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/books", status_code=status.HTTP_201_CREATED, tags=["Books"])
-def create_new_book(book: CreateBook, db: Session = Depends(get_db)):
+def create_new_book(books: List[CreateBook], db: Session = Depends(get_db)):
+    db_book_data_list = []
+    for book in books:
+        db_book_data = Books(
+            title=book.title,
+            description=book.description,
+            publish_date=book.publish_date.strftime("%m/%d/%Y"),
+            author_id=book.author_id,
+        )
 
-    db_book_data = Books(
-        title=book.title,
-        description=book.description,
-        publish_date=book.publish_date.strftime("%m/%d/%Y"),
-        author_id=book.author_id,
-    )
-
-    db.add(db_book_data)
-    db.commit()
-    db.refresh(db_book_data)
-    return db_book_data
+        db.add(db_book_data)
+        db.commit()
+        db.refresh(db_book_data)
+        db_book_data_list.append(db_book_data)
+    return db_book_data_list
 
 
 @router.patch("/books/{id}", tags=["Books"])

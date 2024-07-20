@@ -3,6 +3,7 @@ from app.schema import CreateAuthor, UpdateAuthor
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.model import Authors
+from typing import List
 
 router = APIRouter()
 
@@ -25,18 +26,25 @@ def get_an_author(id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/authors", status_code=status.HTTP_201_CREATED, tags=["Authors"])
-def create_new_author(author: CreateAuthor, db: Session = Depends(get_db)):
+def create_new_author(
+    authors: List[CreateAuthor],
+    db: Session = Depends(
+        get_db,
+    ),
+):
+    db_author_list = []
+    for author in authors:
+        db_author_data = Authors(
+            name=author.name,
+            bio=author.bio,
+            birth_date=author.birth_date.strftime("%m/%d/%Y"),
+        )
 
-    db_author_data = Authors(
-        name=author.name,
-        bio=author.bio,
-        birth_date=author.birth_date.strftime("%m/%d/%Y"),
-    )
-
-    db.add(db_author_data)
-    db.commit()
-    db.refresh(db_author_data)
-    return db_author_data
+        db.add(db_author_data)
+        db.commit()
+        db.refresh(db_author_data)
+        db_author_list.append(db_author_data)
+    return db_author_list
 
 
 @router.patch("/authors/{id}", tags=["Authors"])
