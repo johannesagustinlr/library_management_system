@@ -22,14 +22,24 @@ pip install -r requirements.txt
 Run `pytest`:
 
 ```shell
-pytest```
+pytest
+```
 
 
 ## Usage
+
 ### Dev
 ```shell
-fastapi dev app/main.py```
+fastapi dev app/main.py
+```
 
 ### Prod
 ```shell
-fastapi run app/main.py```
+fastapi run app/main.py
+```
+### Docs
+
+```
+localhost:8000/docs
+```
+
