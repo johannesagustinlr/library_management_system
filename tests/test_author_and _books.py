@@ -7,7 +7,7 @@ from app.main import app  # Assuming your FastAPI instance is in app.main
 from app.database import Base, get_db
 
 # Setting up a test database
-SQLALCHEMY_DATABASE_URL = "sqlite:///tests/fixture/library_test.db"
+SQLALCHEMY_DATABASE_URL = "sqlite:///tests/library_test.db"
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
     connect_args={
